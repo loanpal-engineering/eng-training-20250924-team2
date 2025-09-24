@@ -22,8 +22,8 @@ def create_app():
             }
         }
     
-    # Generate a random secret key for session management
-    app.config['SECRET_KEY'] = str(uuid.uuid4())
+    # PATCHED: Use a fixed secret key for session management
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'team2-super-secret-key-for-training-only-2024')
 
     db.init_app(app)
 
