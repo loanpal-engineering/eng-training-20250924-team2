@@ -258,7 +258,20 @@ def quote_page(quote_id):
         flash("Quote not found or access denied.", "danger")
         return redirect(url_for('main.user'))
     return render_template('existing_quote.html', quote=quote)
-
+    
+def require_admin():
+    """Helper function to validate admin access"""
+    if not session or 'user_id' not in session:
+        flash("You must be logged in to access this page.", "danger")
+        return redirect(url_for('main.login'))
+    
+    # Always validate against database, not session
+    user = User.query.get(session['user_id'])
+    if not user or user.user_type not in ['admin', 'superadmin']:
+        flash("You do not have access to this page.", "danger")
+        return redirect(url_for('main.index'))
+    
+    return user
 @main.route('/admin')
 def admin():
     if not session or 'user_id' not in session or session['user_id'] is None:
