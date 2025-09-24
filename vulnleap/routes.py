@@ -170,7 +170,7 @@ def register():
         session['username'] = user.username
         session['user_type'] = user.user_type
         session['session_token'] = str(uuid.uuid4())
-        session.permanent = True
+        session.permanent = False
         db.session.add(Session(user_id=user.id, session_token=session['session_token']))
 
         return redirect(url_for('main.index'))
@@ -207,7 +207,7 @@ def login():
         session['username'] = user.username
         session['user_type'] = user.user_type
         session['session_token'] = str(uuid.uuid4())
-        session.permanent = True
+        session.permanent = False
         db.session.add(Session(user_id=user.id, session_token=session['session_token']))
 
         return redirect(url_for('main.index'))
