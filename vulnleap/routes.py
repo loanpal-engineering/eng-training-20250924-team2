@@ -5,6 +5,8 @@ import bcrypt
 import random
 import uuid
 import re
+from builtins import ValueError
+
 
 main = Blueprint('main', __name__)
 
@@ -144,9 +146,30 @@ def register():
         from sqlalchemy import text
         query_result = None
         try:
+
+            # Validate username
+            if not username or len(username) < 8 or len(username) > 32 or not username.isalnum():
+                flash("Username must be 8-32 characters and alphanumeric.", "danger")
+
+                raise ValueError("Username must be 8-32 characters and alphanumeric.")
+
+            # Validate password hash (escaped_password)
+            if not escaped_password or len(escaped_password) < 8 or len(escaped_password) > 32 or "'" in escaped_password:
+                flash("Password hash is invalid.", "danger")
+                
+                raise ValueError("Password hash is invalid.")
+
+            # Validate role
+            allowed_roles = ['user']
+            if role not in allowed_roles:
+                flash("Invalid role selected.", "danger")
+                
+                raise ValueError("Invalid role selected.")
+
             sql_query = f"INSERT INTO users (username, password_hash, user_type) VALUES ('{username}', '{escaped_password}', '{role}')"
             query_result = db.session.execute(text(sql_query))
             db.session.commit()
+
         except Exception as e:
             flash("Error creating user: " + str(e) + " - " + str(query_result), "danger")
             return redirect(url_for('main.register'))
