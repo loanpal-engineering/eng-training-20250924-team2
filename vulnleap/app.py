@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from .models import db
+from datetime import timedelta
 import uuid
 
 def create_app():
@@ -24,6 +25,8 @@ def create_app():
     
     # PATCHED: Use a fixed secret key for session management
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'team2-super-secret-key-for-training-only-2024')
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) # Example: 30 minutes
+
 
     db.init_app(app)
 
