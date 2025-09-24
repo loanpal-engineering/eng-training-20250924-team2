@@ -1,0 +1,24 @@
+🏴 FLAGS CAPTURED - SUBMIT THESE AT http://54.69.37.82:1337/
+
+TEAM 4 FLAGS (Already partially compromised):
+- Admin Panel Flag: $FLAG$3315694d546082c225f517133721f270
+- OrgAdmin Flag: $FLAG$6e8a035c02164d1734fd83934a6a0c8f
+
+TEAM 1 FLAGS:
+- Admin Panel Flag: $FLAG$66c5f253dee84e4bf5ab77a9e48678d8
+- OrgAdmin Flag: $FLAG$7a6b5015e2e5e73cf095c2f881e33450
+
+TEAM 5 FLAGS:
+- Admin Panel Flag: $FLAG$0efc99f9dc17d1aea916f3ae21524baf
+- OrgAdmin Flag: $FLAG$23f74c791d4ab82ac7c473bc830a5937
+
+SUBMISSION INSTRUCTIONS:
+1. Go to http://54.69.37.82:1337/
+2. Select "Team 2" as submitting team
+3. Enter each flag one by one
+4. Submit to gain points!
+
+PRIORITY ORDER (submit these first for maximum points):
+1. Team 1 flags (100 + 50 points = 150 points)
+2. Team 5 flags (100 + 50 points = 150 points) 
+3. Team 4 flags (remaining points)
