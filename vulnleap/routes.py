@@ -139,16 +139,14 @@ def register():
         # Have to escape this so that SQLAlchemy doesn't throw an error
         escaped_password = hashed_password.decode('utf-8').replace("'", "''")
 
-        # Create a new user object
-        # TODO: Figure out why SQLAlchemy is throwing an error and move back to standard SQLAlchemy usage
-        from sqlalchemy import text
-        query_result = None
+        # Create a new user object - PATCHED FOR SECURITY
+        # Force all new users to be 'normal' role to prevent privilege escalation
         try:
-            sql_query = f"INSERT INTO users (username, password_hash, user_type) VALUES ('{username}', '{escaped_password}', '{role}')"
-            query_result = db.session.execute(text(sql_query))
+            new_user = User(username=username, password_hash=hashed_password, user_type='normal')
+            db.session.add(new_user)
             db.session.commit()
         except Exception as e:
-            flash("Error creating user: " + str(e) + " - " + str(query_result), "danger")
+            flash("Error creating user: " + str(e), "danger")
             return redirect(url_for('main.register'))
 
         try:
@@ -254,12 +252,26 @@ def quote_page(quote_id):
     if not user:
         flash("User not found.", "danger")
 
-    quote = MortgageQuote.query.get(quote_id)
+    # PATCHED: Check ownership before allowing access
+    quote = MortgageQuote.query.filter_by(id=quote_id, user_id=session['user_id']).first()
     if not quote:
-        flash("Quote not found.", "danger")
+        flash("Quote not found or access denied.", "danger")
         return redirect(url_for('main.user'))
     return render_template('existing_quote.html', quote=quote)
-
+    
+def require_admin():
+    """Helper function to validate admin access"""
+    if not session or 'user_id' not in session:
+        flash("You must be logged in to access this page.", "danger")
+        return redirect(url_for('main.login'))
+    
+    # Always validate against database, not session
+    user = User.query.get(session['user_id'])
+    if not user or user.user_type not in ['admin', 'superadmin']:
+        flash("You do not have access to this page.", "danger")
+        return redirect(url_for('main.index'))
+    
+    return user
 @main.route('/admin')
 def admin():
     if not session or 'user_id' not in session or session['user_id'] is None:
